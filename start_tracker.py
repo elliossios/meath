@@ -4,15 +4,23 @@ import os
 import sys
 import subprocess as sp
 from tracker.tracker_mock import MockSensor
+from signal import signal, SIGPIPE, SIG_DFL 
 
 SENSOR_MAC = 'C3:D4:CC:7C:6C:2E'
 LOCK = "tracker.lock"
 
-def create_lock():
-    open(LOCK, "w+").close()
+def toHex(s):
+    lst = []
+    for ch in s:
+        hv = hex(ord(ch)).replace('0x', '')
+        if len(hv) == 1:
+            hv = '0'+hv
+        lst.append(hv)
+    
+    return reduce(lambda x,y:x+y, lst)
 
-def free_lock():
-    os.remove(LOCK)
+def toStr(s):
+    return s and chr(atoi(s[:2], base=16)) + toStr(s[2:]) or ''
 
 def recreate_file(filename="tracker_log.csv"):
     try:
@@ -24,30 +32,27 @@ def recreate_file(filename="tracker_log.csv"):
         f.write("timestamp,acceleration,pressure,temperature,humidity\n")
 
 def main(sensor):
-    create_lock()
-    while True:
-        state = sensor.update()
-        state = sensor.state
-        data = ""
-        try:
-            with open("tracker_log.csv", "a") as f:
-                data = "{},{},{},{},{}".format(
-                    time.time(),
-                    state["acceleration"],
-                    state["pressure"],
-                    state["temperature"],
-                    state["humidity"]
-                )
-                f.write(data + "\n")
-                print(data)
-        except KeyError as e:
-            print("Data was missing a value ", e)
-        time.sleep(1)
+    signal(SIGPIPE,SIG_DFL) 
+
+    state = sensor.update()
+    state = sensor.state
+    data = ""
+    try:
+        with open("tracker_log.csv", "a") as f:
+            data = "{},{},{},{},{}".format(
+                time.time(),
+                state["acceleration"],
+                state["pressure"],
+                state["temperature"],
+                state["humidity"]
+            )
+            f.write(data + "\n")
+        data = data.encode('utf-8')
+        print(data.hex())
+    except KeyError as e:
+        pass
 
 if __name__=="__main__":
-    if os.path.exists(LOCK):
-        print("Tracker already running!")
-        sys.exit(1)
     import argparse
     parser = argparse.ArgumentParser(
         description='Tracker config.')
@@ -55,15 +60,9 @@ if __name__=="__main__":
     args = parser.parse_args()
 
     if args.mock:
-        print("Bluetooth device is connected")
         sensor = RuuviTag(SENSOR_MAC)
     else:
-        print("Using mock sensor")
         sensor = MockSensor()
 
-    try:
-        recreate_file()
-        main(sensor)
-    except KeyboardInterrupt as e:
-        print("Tracking stopped")
-        free_lock()
+    recreate_file()
+    main(sensor)

@@ -1,34 +1,51 @@
 #include <stdlib.h>
+#include <stdio.h>
 #include <string.h>
 //#include <weeve_sockets.h>
 
-int main(int argc, char *argv[])
+int main( int argc, char *argv[] ) 
 {
 	//on which topic you want send your data?
 	char* topic = "temperature-sensor";
 	int topic_len = strlen(topic);
 
 	//the your hex-coded data
-	char* data = "7b22636f6f7264223a7b226c6f6e223a3133392c226c6174223a33357d2c0d0a22737973223a7b22636f756e747279223a224a50222c2273756e72697365223a313336393736393532342c2273756e736574223a313336393832313034397d2c0d0a2277656174686572223a5b7b226964223a3830342c226d61696e223a22636c6f756473222c226465736372697074696f6e223a226f7665726361737420636c6f756473222c2269636f6e223a2230346e227d5d2c0d0a226d61696e223a7b2274656d70223a3238392e352c2268756d6964697479223a38392c227072657373757265223a313031332c2274656d705f6d696e223a3238372e30342c2274656d705f6d6178223a3239322e30347d2c0d0a2277696e64223a7b227370656564223a372e33312c22646567223a3138372e3030327d2c0d0a227261696e223a7b223368223a307d2c0d0a22636c6f756473223a7b22616c6c223a39327d2c0d0a226474223a313336393832343639382c0d0a226964223a313835313633322c0d0a226e616d65223a225368757a656e6a69222c0d0a22636f64223a3230307d";
-	int data_len  = strlen(data);
-	
+    unsigned char str[150];
+
+	printf("Reading data stream\n");
+	scanf("%s", str);
+	printf("%s\n", str);	
 	//set your price and how many datasets you want to trade with
-	int price = 50;
-	int amount = 1;
+	//int price = 50;
+	//int amount = 1;
 
-	/** 
-			YOUR CODE HERE!!!
-			code your story, where a consumer needs to buy data
 
-	**/
-	//consumer(topic, topic_len, price, amount);
-	sleep(5);
+	//float b = 0.0f;
+	//float c = 0.0f;
+	//float d = 0.0f;
 
-	/** 
-			YOUR CODE HERE!!!
-			code your story, where a producer wants to sell data
+	// Beware argv[0] is program name
+	//sscanf(argv[1],"%f", &a);
+	//sscanf(argv[2],"%f", &b);
+	//sscanf(argv[3],"%f", &c);
+	//sscanf(argv[4],"%f", &d);
+	//printf("%s", argv[1]);
 
-	**/
-	//producer(topic, topic_len, price, amount, data, data_len);
+	//printf("a is: %f\n", a);
+	//printf("b is: %f\n", b);
+	//printf("c is: %f\n", c);
+	//printf("d is: %f\n", d);
+
+	//float abcd[4] = { a, b, c, d };
+
+	//char *data = malloc(sizeof(float) * 4);
+	//u_int8_t *float_data = (u_int8_t*) &abcd;
+	
+	// int i;
+	// for(i=0;i<4;i++)
+	// {
+	// //producer(topic, topic_len, price, amount, data, data_len);
+	    /*set strH with nulls*/
+
 	return 0;
 }
