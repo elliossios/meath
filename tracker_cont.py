@@ -20,7 +20,7 @@ def recreate_file(filename="tracker_log.csv"):
         pass
 
     with open(filename, "w+") as f:
-        f.write("acceleration,pressure,temperature,humidity\n")
+        f.write("timestamp,acceleration,pressure,temperature,humidity\n")
 
 def main():
     create_lock()
@@ -30,7 +30,8 @@ def main():
 
         try:
             with open("tracker_log.csv", "a") as f:
-                f.write("{},{},{},{}\n".format(
+                f.write("{},{},{},{},{}\n".format(
+                    time.time()
                     state["acceleration"],
                     state["pressure"],
                     state["temperature"],
