@@ -31,7 +31,7 @@ def main():
         try:
             with open("tracker_log.csv", "a") as f:
                 f.write("{},{},{},{},{}\n".format(
-                    time.time()
+                    time.time(),
                     state["acceleration"],
                     state["pressure"],
                     state["temperature"],
