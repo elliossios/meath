@@ -48,10 +48,13 @@ if __name__=="__main__":
     if os.path.exists(LOCK):
         print("Tracker already running!")
         sys.exit(1)
-    
-    stdoutdata = sp.getoutput("hcitool con")
+    import argparse
+    parser = argparse.ArgumentParser(
+        description='Tracker config.')
+    parser.add_argument('--mock', action='store_false')
+    args = parser.parse_args()
 
-    if SENSOR_MAC in stdoutdata.split():
+    if args.mock:
         print("Bluetooth device is connected")
         sensor = RuuviTag(SENSOR_MAC)
     else:
