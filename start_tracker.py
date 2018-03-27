@@ -31,7 +31,7 @@ def recreate_file(filename="tracker_log.csv"):
     with open(filename, "w+") as f:
         f.write("timestamp,acceleration,pressure,temperature,humidity\n")
 
-def main(sensor):
+def main(sensor, measurement):
     signal(SIGPIPE,SIG_DFL) 
 
     state = sensor.update()
@@ -39,30 +39,35 @@ def main(sensor):
     data = ""
     try:
         with open("tracker_log.csv", "a") as f:
+            state["timestamp"] = time.time()
             data = "{},{},{},{},{}".format(
-                time.time(),
+                state["timestamp"],
                 state["acceleration"],
                 state["pressure"],
                 state["temperature"],
                 state["humidity"]
             )
             f.write(data + "\n")
+        data = "{},{}".format(
+            state["timestamp"],
+            state[measurement]
+        )
         data = data.encode('utf-8')
         print(data.hex())
     except KeyError as e:
-        pass
+        print(e)
 
 if __name__=="__main__":
     import argparse
     parser = argparse.ArgumentParser(
         description='Tracker config.')
     parser.add_argument('--mock', action='store_false')
+    parser.add_argument('--measurement')
     args = parser.parse_args()
-
     if args.mock:
         sensor = RuuviTag(SENSOR_MAC)
     else:
         sensor = MockSensor()
 
     recreate_file()
-    main(sensor)
+    main(sensor, args.measurement)

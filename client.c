@@ -6,7 +6,9 @@
 int main( int argc, char *argv[] ) 
 {
 	//on which topic you want send your data?
-	char* topic = "temperature-sensor";
+	char topic[16];
+	sscanf(argv[1],"%s", topic);
+
 	int topic_len = strlen(topic);
 
 	//the your hex-coded data
@@ -14,6 +16,8 @@ int main( int argc, char *argv[] )
 
 	printf("Reading data stream\n");
 	scanf("%s", str);
+	
+	printf("%s\n", topic);
 	printf("%s\n", str);	
 	//set your price and how many datasets you want to trade with
 	//int price = 50;
