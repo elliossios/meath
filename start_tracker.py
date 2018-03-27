@@ -7,24 +7,18 @@ from tracker.tracker_mock import MockSensor
 from signal import signal, SIGPIPE, SIG_DFL 
 
 SENSOR_MAC = 'C3:D4:CC:7C:6C:2E'
+LOGFILE = "tracker_log.csv"
 
 def create_log_file(filename="tracker_log.csv"):
-    try:
-        os.remove(filename)
-    except OSError:
-        pass
-
     with open(filename, "w+") as f:
-        f.write("timestamp,acceleration,pressure,temperature,humidity\n")
+        f.write("timestamp,measurement,value\n")
 
-def write_to_csv(state):
-    with open("tracker_log.csv", "a") as f:
-        data = "{},{},{},{},{}".format(
+def write_to_csv(state, measurement):
+    with open(LOGFILE, "a") as f:
+        data = "{},{},{}".format(
             state["timestamp"],
-            state["acceleration"],
-            state["pressure"],
-            state["temperature"],
-            state["humidity"]
+            measurement,
+            state[measurement],
         )
         f.write(data + "\n")
 
@@ -36,11 +30,12 @@ def run(sensor, measurement):
     state["timestamp"] = time.time()
 
     try:
-        #write_to_csv(state)
+        
         data = "{},{}".format(
             state["timestamp"],
             state[measurement]
         )
+        write_to_csv(state, measurement)
         data = data.encode('utf-8')
         print(data.hex())
     except KeyError as e:
@@ -60,5 +55,6 @@ if __name__=="__main__":
     else:
         sensor = MockSensor()
 
-    create_log_file()
+    if not os.path.exists(LOGFILE):
+        create_log_file()
     run(sensor, args.measurement)
