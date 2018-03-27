@@ -2,10 +2,11 @@ from ruuvitag_sensor.ruuvitag import RuuviTag
 import time
 import os
 import sys
+import subprocess as sp
+from tracker.tracker_mock import MockSensor
 
+SENSOR_MAC = 'C3:D4:CC:7C:6C:2E'
 LOCK = "tracker.lock"
-
-sensor = RuuviTag('C3:D4:CC:7C:6C:2E')
 
 def create_lock():
     open(LOCK, "w+").close()
@@ -22,7 +23,7 @@ def recreate_file(filename="tracker_log.csv"):
     with open(filename, "w+") as f:
         f.write("timestamp,acceleration,pressure,temperature,humidity\n")
 
-def main():
+def main(sensor):
     create_lock()
     while True:
         state = sensor.update()
@@ -30,14 +31,14 @@ def main():
         data = ""
         try:
             with open("tracker_log.csv", "a") as f:
-                data = "{},{},{},{},{}\n".format(
+                data = "{},{},{},{},{}".format(
                     time.time(),
                     state["acceleration"],
                     state["pressure"],
                     state["temperature"],
                     state["humidity"]
                 )
-                f.write(data)
+                f.write(data + "\n")
                 print(data)
         except KeyError as e:
             print("Data was missing a value ", e)
@@ -48,9 +49,18 @@ if __name__=="__main__":
         print("Tracker already running!")
         sys.exit(1)
     
+    stdoutdata = sp.getoutput("hcitool con")
+
+    if SENSOR_MAC in stdoutdata.split():
+        print("Bluetooth device is connected")
+        sensor = RuuviTag(SENSOR_MAC)
+    else:
+        print("Using mock sensor")
+        sensor = MockSensor()
+
     try:
         recreate_file()
-        main()
+        main(sensor)
     except KeyboardInterrupt as e:
         print("Tracking stopped")
         free_lock()
