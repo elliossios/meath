@@ -27,16 +27,18 @@ def main():
     while True:
         state = sensor.update()
         state = sensor.state
-
+        data = ""
         try:
             with open("tracker_log.csv", "a") as f:
-                f.write("{},{},{},{},{}\n".format(
+                data = "{},{},{},{},{}\n".format(
                     time.time(),
                     state["acceleration"],
                     state["pressure"],
                     state["temperature"],
                     state["humidity"]
-                ))
+                )
+                f.write(data)
+                print(data)
         except KeyError as e:
             print("Data was missing a value ", e)
         time.sleep(1)
