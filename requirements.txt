@@ -1,1 +1,3 @@
 ruuvitag_sensor
+flask
+requests

@@ -3,41 +3,36 @@ import time
 import os
 import sys
 import subprocess as sp
-from tracker.tracker_mock import MockSensor
+from tracker.mock_sensor import MockSensor
+from tracker.geo_api import GeoApi
+from tracker.models import Measurement
 from signal import signal, SIGPIPE, SIG_DFL 
 
 SENSOR_MAC = 'C3:D4:CC:7C:6C:2E'
 LOGFILE = "tracker_log.csv"
+GEO_SERVER = "http://localhost:5000"
 
 def create_log_file(filename="tracker_log.csv"):
     with open(filename, "w+") as f:
-        f.write("timestamp,measurement,value\n")
+        f.write("timestamp,lat,long,measurement,value\n")
 
-def write_to_csv(state, measurement):
+def write_to_csv(data: Measurement):
     with open(LOGFILE, "a") as f:
-        data = "{},{},{}".format(
-            state["timestamp"],
-            measurement,
-            state[measurement],
-        )
-        f.write(data + "\n")
+        f.write(data.to_csv_row())
 
 def run(sensor, measurement):
     signal(SIGPIPE,SIG_DFL) 
+    geo_api = GeoApi(GEO_SERVER)
+    loc = geo_api.get_location()
 
     _ = sensor.update()
     state = sensor.state
-    state["timestamp"] = time.time()
 
-    try:
-        
-        data = "{},{}".format(
-            state["timestamp"],
-            state[measurement]
-        )
-        write_to_csv(state, measurement)
-        data = data.encode('utf-8')
-        print(data.hex())
+    try: 
+        data = Measurement(time.time(), loc["lat"], loc["long"],
+                            state[measurement], measurement)
+        write_to_csv(data)
+        print(data.to_hex())
     except KeyError as e:
         print(e)
 
@@ -46,7 +41,7 @@ if __name__=="__main__":
     parser = argparse.ArgumentParser(
         description='Tracker config.')
     parser.add_argument('--mock', action='store_false')
-    parser.add_argument('--measurement')
+    parser.add_argument('--measurement', required=True)
     args = parser.parse_args()
 
     # Check if we want to mock the sensor because we are not running on HiKey
