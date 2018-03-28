@@ -1,14 +1,14 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-//#include <weeve_sockets.h>
+#include <weeve_sockets.h>
 
 int main( int argc, char *argv[] ) 
 {
 	//on which topic you want send your data?
 	char topic[16];
 	sscanf(argv[1],"%s", topic);
-	int topic_len = strlen(topic);
+	int topic_len = sizeof(topic);
 
 	//the your hex-coded data
     unsigned char str[80];
@@ -18,8 +18,10 @@ int main( int argc, char *argv[] )
 	// Print for now
 	printf("%s\n", topic);
 	printf("%s\n", str);	
+	int price = 5;
+	int amount = 1;
 
-	//producer(topic, topic_len, price, amount, data, data_len);
+	producer(topic, topic_len, price, amount, str, sizeof(str));
 
 	return 0;
 }
