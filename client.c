@@ -11,7 +11,7 @@ int main( int argc, char *argv[] )
 	int topic_len = sizeof(topic);
 
 	//the your hex-coded data
-    unsigned char str[80];
+    unsigned char str[256];
 	printf("Reading data stream\n");
 	scanf("%s", str);
 
