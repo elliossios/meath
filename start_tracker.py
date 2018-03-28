@@ -7,7 +7,7 @@ from tracker.geo_api import GeoApi
 from tracker.models import Measurement
 from signal import signal, SIGPIPE, SIG_DFL 
 
-SENSOR_MAC = 'F5:20:8C:F8:C5:0D'
+SENSOR_MAC = 'D3:7E:10:F4:95:6D'
 LOGFILE = "tracker_log.csv"
 GEO_SERVER = "http://localhost:5000"
 
@@ -41,12 +41,16 @@ if __name__=="__main__":
         description='Tracker config.')
     parser.add_argument('--mock', action='store_false')
     parser.add_argument('--measurement', required=True)
+    parser.add_argument('--mac')
     args = parser.parse_args()
 
     # Check if we want to mock the sensor because we are not running on HiKey
     if args.mock:
         from ruuvitag_sensor.ruuvitag import RuuviTag
-        sensor = RuuviTag(SENSOR_MAC)
+        if args.mac:
+            sensor = RuuviTag(args.mac)
+        else:
+            sensor = RuuviTag(SENSOR_MAC)
     else:
         sensor = MockSensor()
 
