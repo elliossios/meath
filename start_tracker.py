@@ -7,7 +7,7 @@ from tracker.geo_api import GeoApi
 from tracker.models import Measurement
 from signal import signal, SIGPIPE, SIG_DFL 
 
-SENSOR_MAC = 'C3:D4:CC:7C:6C:2E'
+SENSOR_MAC = 'F5:20:8C:F8:C5:0D'
 LOGFILE = "tracker_log.csv"
 GEO_SERVER = "http://localhost:5000"
 
