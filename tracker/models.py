@@ -1,3 +1,5 @@
+import binascii
+
 class Measurement:
     def __init__(self, time, lat, lon, measurement, measurement_name):
         self.time = time
@@ -25,7 +27,7 @@ class Measurement:
     
     def to_hex(self):
         data = self.to_string()
-        return data.encode('utf-8').hex()
+        return binascii.hexlify(data.encode('utf-8'))
     
     def __str__(self):
         return self.to_string()
