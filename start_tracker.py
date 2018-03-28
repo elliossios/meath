@@ -1,4 +1,3 @@
-from ruuvitag_sensor.ruuvitag import RuuviTag
 import time
 import os
 import sys
@@ -46,6 +45,7 @@ if __name__=="__main__":
 
     # Check if we want to mock the sensor because we are not running on HiKey
     if args.mock:
+        from ruuvitag_sensor.ruuvitag import RuuviTag
         sensor = RuuviTag(SENSOR_MAC)
     else:
         sensor = MockSensor()
