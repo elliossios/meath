@@ -27,7 +27,7 @@ class Measurement:
     
     def to_hex(self):
         data = self.to_string()
-        return binascii.hexlify(data.encode('utf-8'))
+        return binascii.hexlify(data.encode('utf-8')).decode('ascii')
     
     def __str__(self):
         return self.to_string()
