@@ -1,6 +1,6 @@
 from ruuvitag_sensor.ruuvitag import RuuviTag
 
-sensor = RuuviTag('C3:D4:CC:7C:6C:2E')
+sensor = RuuviTag('D3:7E:10:F4:95:6D')
 
 # update state from the device
 state = sensor.update()
