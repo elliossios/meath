@@ -1,0 +1,2 @@
+1. start_reli.sh starts the local tracker process (start_tracker.py) and the c api relay to weeve os. This assumes the start_geo_server.py is running in a different process and providing (mock) geo location data
+2. the tracker package mostly implements models for the geo api and the measurements.
